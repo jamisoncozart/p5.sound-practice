@@ -4,11 +4,9 @@ let button;
 let amp;
 
 function setup() {
-  createCanvas(200,200);
+  createCanvas(600,200);
   song = loadSound("assets/coalesce.mp3", loaded);
-  song.setVolume(0.3);
-  amp = new p5.Amplitude();
-  console.log(amp);
+  fft = new p5.FFT(0.6);
 }
 
 function loaded() {
@@ -29,11 +27,34 @@ function togglePlaying() {
 }
 
 function draw() {
-  background(40);
-  let vol = amp.getLevel();
-  let diam = map(vol, 0, 0.5, 10, 200);
-  fill(0, 200, 255);
-  ellipse(width/2, height/2, diam, diam)
+  background(60);
+  let spectrum = fft.analyze();
+  let bass = fft.getEnergy("bass");
+  // let lowMid = fft.getEnergy(80, 200);
+  // let mid = fft.getEnergy(200, 500);
+  // let speach = fft.getEnergy(500, 800);
+  // let highMid = fft.getEnergy(800, 1400);
+  // let lowHigh = fft.getEnergy(1400, 2500);
+  // let high = fft.getEnergy(2500, 8000);
+  // let highHigh = fft.getEnergy(8000, 20000);
+  // let bass = fft.getEnergy("bass");
+  // let lowMid = fft.getEnergy("lowMid");
+  // let mid = fft.getEnergy("mid");
+  // let highMid = fft.getEnergy("highMid");
+  // let treble = fft.getEnergy("treble");
+  
+  noStroke();
+  fill(0, 255, 255);
+  if(bass > 100) {
+    let h = -height + map(bass, 101, 255, height, 0);
+    rect(10, height, 40, h);
+  }
+
+  // for (var i = 0; i< spectrum.length; i++){
+  //   let x = map(i, 0, spectrum.length, 0, width);
+  //   let h = -height + map(spectrum[i], 0, 255, height, 0);
+  //   rect(x, height, width / spectrum.length, h );
+  // }
   if(song.currentTime() > 1) {
     song.rate(sliderRate.value());
   }
